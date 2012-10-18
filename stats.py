@@ -1,9 +1,23 @@
 import curses
 import time
+import urllib2
+import base64
+import getpass
+import json
 
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 
-def main(stdscr):
+def authorizedGithubRequest(uname, passwd, request):
+  base_url = "https://api.github.com"
+
+  request = urllib2.Request(base_url + request)
+  base64string = base64.encodestring("%s:%s" % (uname,  passwd))               \
+                        .replace('\n', '')
+  request.add_header('Authorization', 'Basic %s' % base64string)
+
+  return json.loads(urllib2.urlopen(request).read())
+
+def main(stdscr, uname, passwd):
   curses.start_color()
   curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
   curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
@@ -13,17 +27,19 @@ def main(stdscr):
   curses.init_pair(6, curses.COLOR_CYAN, curses.COLOR_BLACK)
   curses.init_pair(7, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
-  if curses.has_colors():
-    stdscr.addstr(0, 0, 'Black', curses.color_pair(BLACK))
-    stdscr.addstr(1, 0, 'Red', curses.color_pair(RED))
-    stdscr.addstr(2, 0, 'Green', curses.color_pair(GREEN))
-    stdscr.addstr(3, 0, 'Yellow', curses.color_pair(YELLOW))
-    stdscr.addstr(4, 0, 'Blue', curses.color_pair(BLUE))
-    stdscr.addstr(5, 0, 'Magenta', curses.color_pair(MAGENTA))
-    stdscr.addstr(6, 0, 'Cyan', curses.color_pair(CYAN))
-    stdscr.addstr(7, 0, 'White', curses.color_pair(WHITE))
-  stdscr.refresh()
-  time.sleep(10)
+  while True:
+    print authorizedGithubRequest(uname, passwd, '/rate_limit')
+    return
+    orgs = authorizedGithubRequest(uname, passwd, '/users/zipcodeman/orgs')
+    pos = 0
+    for org in orgs:
+      stdscr.addstr(pos, 0, org['login'])
+      pos += 1
+    stdscr.refresh()
+    time.sleep(60)
 
 if __name__ == '__main__':
-  curses.wrapper(main)
+  uname  = raw_input("Username: ")
+  passwd = getpass.getpass('Password: ')
+  curses.wrapper(main, uname, passwd)
+  print authorizedGithubRequest(uname, passwd, '/rate_limit')

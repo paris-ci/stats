@@ -1,4 +1,3 @@
-# header comment
 import curses
 import time
 

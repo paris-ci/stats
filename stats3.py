@@ -8,6 +8,9 @@ import urllib.request
 import base64
 import getpass
 import json
+import threading
+
+import subprocess
 
 try: input = raw_input
 except: pass
@@ -84,16 +87,7 @@ class Github:
     else:
       return self.apiRequest('/events')
 
-def main(stdscr, git):
-  curses.start_color()
-  curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
-  curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
-  curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-  curses.init_pair(4, curses.COLOR_BLUE, curses.COLOR_BLACK)
-  curses.init_pair(5, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
-  curses.init_pair(6, curses.COLOR_CYAN, curses.COLOR_BLACK)
-  curses.init_pair(7, curses.COLOR_WHITE, curses.COLOR_BLACK)
-
+def renderLoop(stdscr, git):
   summaryWidth = 50
 
   summaryWindow = curses.newwin(0, summaryWidth, 0, 0)
@@ -180,6 +174,32 @@ def main(stdscr, git):
 
     streamWindow.refresh()
     time.sleep(10)
+
+def updateCheck():
+  print("checking")
+  print(subprocess.call(['git', 'status', '-uno']))
+
+def main(stdscr, git):
+  curses.start_color()
+  curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+  curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+  curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+  curses.init_pair(4, curses.COLOR_BLUE, curses.COLOR_BLACK)
+  curses.init_pair(5, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
+  curses.init_pair(6, curses.COLOR_CYAN, curses.COLOR_BLACK)
+  curses.init_pair(7, curses.COLOR_WHITE, curses.COLOR_BLACK)
+
+  render = threading.Thread(target = renderLoop, args=(stdscr, git))
+  update = threading.Thread(target = updateCheck)
+
+  render.setDaemon(True)
+  update.setDaemon(True)
+
+  render.start()
+  update.start()
+
+  render.join()
+  update.join()
 
 if __name__ == '__main__':
   while True:

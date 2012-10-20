@@ -103,6 +103,7 @@ def main(stdscr, git):
   while True:
 
     if count == 6:
+      summaryWindow.clear()
       pos = 1
       count = 0
       user = git.user()
@@ -149,6 +150,7 @@ def main(stdscr, git):
       count += 1
     pos = 1
     events = git.myEvents()
+    streamWindow.clear()
     try: # write until we fail
       for event in events:
         t = event['type']

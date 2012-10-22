@@ -1,5 +1,6 @@
 import curses
 import time
+import sys
 
 try:
   from http.client import HTTPSConnection

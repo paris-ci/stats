@@ -4,4 +4,4 @@ python:
   - "2.7"
   - "3.2"
 
-script: python stats3.py
+script: python stats.py

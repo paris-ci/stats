@@ -1,10 +1,11 @@
-
 import curses
 import time
 
-from http.client import HTTPSConnection
+try:
+  from http.client import HTTPSConnection
+except ImportError:
+  from httplib import HTTPSConnection
 
-import urllib.request
 import base64
 import getpass
 import json

@@ -184,7 +184,7 @@ def main(stdscr, git):
     time.sleep(10)
 
 if __name__ == '__main__':
-  if len(sys.argv) == 1:
+  if 'dummy' not in sys.argv:
     while True:
       uname  = input("Username: ")
       passwd = getpass.getpass('Password: ')

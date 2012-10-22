@@ -183,11 +183,12 @@ def main(stdscr, git):
     time.sleep(10)
 
 if __name__ == '__main__':
-  while True:
-    uname  = input("Username: ")
-    passwd = getpass.getpass('Password: ')
-    git = Github(uname, passwd)
-    if git.validCredentials():
-      break
+  if len(sys.argv) == 1:
+    while True:
+      uname  = input("Username: ")
+      passwd = getpass.getpass('Password: ')
+      git = Github(uname, passwd)
+      if git.validCredentials():
+        break
 
-  curses.wrapper(main, git)
+    curses.wrapper(main, git)

@@ -116,15 +116,15 @@ def main(stdscr, git):
       else:
         realname = user['login']
       
-      summaryWindow.addstr(pos, 1, realname, curses.color_pair(BLUE))
+      summaryWindow.addstr(pos, int(1), str(realname), curses.color_pair(BLUE))
       pos += 1
 
       if 'email' in user and user['email'] != "":
-        summaryWindow.addstr(pos, 1, user['email'], curses.color_pair(WHITE))
+        summaryWindow.addstr(pos, 1, str(user['email']), curses.color_pair(WHITE))
         pos += 1
 
       if 'location' in user and user['location'] != "":
-        summaryWindow.addstr(pos, 1, user['location'], curses.color_pair(WHITE))
+        summaryWindow.addstr(pos, 1, str(user['location']), curses.color_pair(WHITE))
         pos += 1
 
       pos += 1
